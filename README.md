@@ -1,4 +1,3 @@
-```markdown
 # 👗 Fashion Recommender System (Hybrid Recommendation Engine)
 
 This project implements a **hybrid recommendation system** for fashion products  
