@@ -1,0 +1,39 @@
+# --- ENVIRONNEMENT PYTHON ---
+.venv/
+env/
+venv/
+ENV/
+
+# --- CACHE PYTHON ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- NOTEBOOKS CHECKPOINTS ---
+.ipynb_checkpoints/
+
+# --- CONFIG VS CODE / SYSTEME ---
+.vscode/
+*.DS_Store
+Thumbs.db
+
+# --- DATA ---
+data/
+!data/.keep  # si un jour tu veux garder un fichier vide
+
+# --- MODELES / PICKLE ---
+*.pkl
+*.joblib
+*.h5
+*.db
+
+# --- LOGS ---
+*.log
+
+# --- STREAMLIT / APP CACHE ---
+.streamlit/
+
+# --- AUTRES ---
+*.bak
+*.tmp
