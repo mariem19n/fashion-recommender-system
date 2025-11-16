@@ -1,37 +1,93 @@
-# 👗 Fashion Recommender System (Hybrid Recommendation Engine)
+# 👗 Fashion Hybrid Recommendation System (Content + Constraint + Knowledge Based)
 
 This project implements a **hybrid recommendation system** for fashion products  
-(similar to SHEIN, Zara, H&M-style product discovery).  
-The recommender combines **Content-Based**, **Popularity-Based**,  
-**Constraint-Based**, and **Knowledge-Based** techniques inside a modern Streamlit app.
+(similar to SHEIN, Zara, H&M product discovery).
+
+The model combines:
+
+- **Content-Based Filtering** (vector similarity using One-Hot + Price + Rating)
+- **Constraint-Based Filtering** (user-selected filters like price, color, size…)
+- **Knowledge-Based Rules** (rules for “sport”, “casual”, “premium”, “cheap”, etc.)
+- **Hybrid Model** combining the three with weights (default: 0.6 / 0.2 / 0.2)
+
+This repository also includes:
+
+- A complete **evaluation pipeline** (Precision@K, Recall@K)
+- A **heatmap** of hybrid similarities
+- A **Streamlit app (app.py)** with a SHEIN-like UI
 
 ---
 
-## 🚀 Features
+## 🚀 Main Features
 
-### 🔍 Recommendation Models
-- **Content-Based Filtering**  
-  Recommends similar items based on product features (category, price, color, brand).
-- **Popularity-Based Filtering**  
-  Ranks products by rating, number of views or purchases.
-- **Constraint-Based Filtering**  
-  User selects filters such as category, color, price range → shown like an e-commerce interface.
-- **Knowledge-Based Filtering**  
-  Rule-based suggestions (e.g., “Winter items”, “Budget items”, “Premium picks”).
-- **Reference Product Choice (optional)**  
-  User can select a reference item → recommendations are computed from it.  
-  Includes a “None” option to disable this part.
+### 🔵 1. Content-Based Filtering
+- Builds a **product feature matrix** using:
+  - Brand  
+  - Category  
+  - Color  
+  - Size  
+  - Price  
+  - Rating  
+- One-Hot Encoding for categorical features  
+- Min-Max scaling for numerical features  
+- Similarity = **cosine similarity**
+
+### 🔶 2. Constraint-Based Filtering
+User-selected constraints:
+- Max price  
+- Min price  
+- Brand  
+- Category  
+- Color  
+- Size  
+- Min rating  
+- Or automatically derived from a **reference product**  
+
+Recommendations are sorted by:
+- Highest rating
+- Lowest price
+
+### 🟢 3. Knowledge-Based Rules
+Rules based on:
+- **Usage** (sport, chic, casual, work)
+- **Budget level** (cheap, mid, premium)
+- Brand style
+- Color preferences
+- Size preferences
+- Quality threshold (min rating)
+
+Example rules:
+- “Sport” → only Adidas or Nike  
+- “Chic” → Gucci, black/red/gold colors  
+- “Work” → neutral colors + selected brands  
+- Budget segmentation using price quantiles
+
+### 🔴 4. Hybrid Model
+Final score combines:
+
+```
+
+hybrid_score =
+0.6 * content_score +
+0.2 * constraint_score +
+0.2 * knowledge_score
+
+```
+
+Constraint & Knowledge scores ∈ {0,1}  
+Content-Based score normalized ∈ [0,1]
 
 ---
 
-## 🎨 User Interface (SHEIN-style)
+## 📊 Evaluation Metrics Included
 
-The app provides a clean and simple e-commerce-like UI:
+You have full evaluation for:
 
-- Centered filters and criteria  
-- Modern cards for results  
-- Clear product display (name, brand, price, rating)  
-- Responsive layout
+- **Content-Based Precision@K & Recall@K**
+- **Hybrid Precision@K & Recall@K**
+- **Global evaluation on a sample of products**
+- **Visual comparison bar chart**
+- **Heatmap of hybrid similarities**
 
 ---
 
@@ -40,82 +96,46 @@ The app provides a clean and simple e-commerce-like UI:
 ```
 
 SYST_REC/
-│── app.py                    # Streamlit application
+│── app.py                    # Streamlit UI 
 │── src/
-│     ├── exploration.ipynb   # Data exploration & preprocessing
-│     └── recommender_systems.ipynb
+│     ├── exploration.ipynb   # Exploratory analysis
+│     └── recommender_systems.ipynb  # All models + evaluation
+│── data/                     # (IGNORED IN GIT)
+│     └── fashion_products.csv
 │── requirements.txt
-│── README.md
-└── .gitignore
+│── .gitignore
+└── README.md
 
 ```
 
-> ⚠️ The `data/` folder is not included in the repository.  
-> Place your dataset here:
-> `data/fashion_products.csv`
+
 
 ---
 
-## 📊 Dataset
+## ▶️ Running the Streamlit App
 
-The system uses a CSV dataset of fashion products containing:
-
-- Product ID  
-- Product Name  
-- Brand  
-- Category  
-- Price  
-- Color  
-- Size  
-- Rating  
-
-Add your dataset as:
-
-```
-
-data/fashion_products.csv
-
-````
-
----
-
-## ▶️ Run the Application
-
-### 1. Install dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
-````
+```
 
-### 2. Launch the Streamlit app
+Run the application:
 
 ```bash
 streamlit run app.py
 ```
 
-The app opens in your browser.
+---
+
+## 📘 Technologies Used
+
+* Python
+* Pandas / NumPy
+* Scikit-Learn
+* Streamlit
+* Seaborn / Matplotlib
 
 ---
 
-## 🧠 How Recommendations Work
-
-### Content-Based
-
-Uses similarity between product features to find related items.
-
-### Popularity-Based
-
-Ranks items by rating or demand.
-
-### Constraint-Based
-
-Filters chosen by the user (like in fashion websites).
-
-### Knowledge-Based
-
-Simple expert rules (price constraints, seasonal items, etc.).
-
-The system does **not** use deep learning → ideal for smaller datasets.
-
----
 
